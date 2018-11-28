@@ -1,24 +1,40 @@
 import React, {Component} from 'react';
+import firebase from '../firebase.js';
 import "../scss/main.scss"
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            author : "",
+            author: "",
             title: "",
             rating: ""
-        }
-    }
+        };
+    };
 
-    handleChange = (event) => {
+    handleChange = (event) =>{
         this.setState({
             [event.target.name]: event.target.value,
         })
-    }
+    };
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        const booksRef = firebase.database().ref("books");
+        const book = {
+            author: this.state.author,
+            title: this.state.title,
+            rating: this.state.rating
+        };
+        booksRef.push(book);
+        this.setState({
+            author: "",
+            title: "",
+            rating: ""
+        });
+    };
 
     render() {
-        console.log(this.state.author, this.state.rating);
         return (
             <div>
                 <header className="header">
@@ -28,13 +44,14 @@ class App extends Component {
                 </header>
                 <div className="book-panel main-width">
                     <section className="book-panel_form">
-                        <form className="add-book">
+                        <form className="add-book"
+                              onSubmit={this.handleSubmit}>
                             <input type="text"
                                    name="author"
                                    placeholder="Author"
                                    className="add-book_input add-book_input--author"
                                    onChange={this.handleChange}
-                                   />
+                            />
                             <input type="text"
                                    name="title"
                                    placeholder="Title"
@@ -45,7 +62,9 @@ class App extends Component {
                                    placeholder="Rating"
                                    className="add-book_input add-book_input--rating"
                                    onChange={this.handleChange}/>
-                            <button className="add-book_button">Add Book</button>
+                            <button className="add-book_button">
+                                Add Book
+                            </button>
                         </form>
                     </section>
                     <section className="book-panel_display-book">

@@ -1,6 +1,5 @@
-import firebase from 'firebase';
-
-const config = {
+import * as firebase from 'firebase';
+var config = {
     apiKey: "AIzaSyBFJ5VetnAOx0D_BFt6_AID0qW6ImIO5Uo",
     authDomain: "book-manager-95941.firebaseapp.com",
     databaseURL: "https://book-manager-95941.firebaseio.com",
@@ -10,4 +9,4 @@ const config = {
 };
 firebase.initializeApp(config);
 
-export default firebase;
+export default firebase
