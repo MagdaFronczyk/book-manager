@@ -35,6 +35,11 @@ class App extends Component {
         });
     };
 
+    handleDelete = (bookId) => {
+        const bookRef = firebase.database().ref(`/books/${bookId}`);
+        bookRef.remove();
+    };
+
     render() {
         return (
             <div>
@@ -78,7 +83,7 @@ class App extends Component {
                                         <h3>{book.title}</h3>
                                         <p>Rating: {book.rating}</p>
                                         <button>Edit</button>
-                                        <button>Delete</button>
+                                        <button onClick={() => this.handleDelete(book.id)}>Delete</button>
                                     </li>
                                 )
                             })}
