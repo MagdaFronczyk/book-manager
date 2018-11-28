@@ -69,18 +69,46 @@ class App extends Component {
                         </form>
                     </section>
                     <section className="book-panel_display-book">
-                        <ul>
-
+                        <ul className="display-book_booklist">
+                            {this.state.books.map((book) => {
+                                return (
+                                    <li key={book.id}
+                                        className="booklist_item">
+                                        <h2>{book.author}</h2>
+                                        <h3>{book.title}</h3>
+                                        <p>Rating: {book.rating}</p>
+                                        <button>Edit</button>
+                                        <button>Delete</button>
+                                    </li>
+                                )
+                            })}
                         </ul>
                     </section>
                 </div>
                 <footer className=" footer main-width">
                     <ul>
-
                     </ul>
                 </footer>
             </div>
         );
+    }
+    componentDidMount() {
+        const booksRef = firebase.database().ref("books");
+        booksRef.on("value", (snapshot)=>{
+            const books = snapshot.val();
+            let newBookList = [];
+            for (let book in books) {
+                newBookList.push({
+                    id: book,
+                    author: books[book].author,
+                    title: books[book].title,
+                    rating: books[book].rating
+                })
+            }
+            this.setState({
+                books: newBookList
+            });
+        });
     }
 }
 
