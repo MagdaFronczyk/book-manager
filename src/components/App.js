@@ -8,7 +8,8 @@ class App extends Component {
         this.state = {
             author: "",
             title: "",
-            rating: ""
+            rating: "",
+            books : []
         };
     };
 

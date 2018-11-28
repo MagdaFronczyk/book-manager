@@ -30,3 +30,6 @@ $RECYCLE.BIN/
 Desktop.ini
 *.db
 *.autosave
+
+#database
+firebase.js
