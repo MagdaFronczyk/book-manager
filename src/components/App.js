@@ -30,6 +30,7 @@ class App extends Component {
             rating: this.state.rating
         };
         booksRef.push(book);
+        // dlaczego czyszczenie nie działa w outpucie? State sprawdzony, działa
         this.setState({
             author: "",
             title: "",
@@ -42,9 +43,12 @@ class App extends Component {
         bookRef.remove();
     };
 
+    //uruchomić tylko dla przyciśniętego elementu
+
     handleEdit = () => {
         this.setState({
             editing: true,
+            rating: ""
         });
     };
 
@@ -55,6 +59,7 @@ class App extends Component {
         );
         this.setState({
             editing: false,
+            newRating: ""
         })
     };
 
