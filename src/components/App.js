@@ -9,11 +9,13 @@ class App extends Component {
             author: "",
             title: "",
             rating: "",
-            books : []
+            newRating: "",
+            books: [],
+            editing: false
         };
     };
 
-    handleChange = (event) =>{
+    handleChange = (event) => {
         this.setState({
             [event.target.name]: event.target.value,
         })
@@ -40,7 +42,24 @@ class App extends Component {
         bookRef.remove();
     };
 
+    handleEdit = () => {
+        this.setState({
+            editing: true,
+        });
+    };
+
+    handleSave = (bookId) => {
+        const bookRef = firebase.database().ref(`/books/${bookId}`);
+        bookRef.update(
+            {"rating": this.state.newRating}
+        );
+        this.setState({
+            editing: false,
+        })
+    };
+
     render() {
+
         return (
             <div>
                 <header className="header">
@@ -76,14 +95,27 @@ class App extends Component {
                     <section className="book-panel_display-book">
                         <ul className="display-book_booklist">
                             {this.state.books.map((book) => {
+                                let rating;
+                                if (!this.state.editing) {
+                                    rating =  <p>Rating: {book.rating}</p>
+                                } else {
+                                    rating =
+                                        <div>
+                                            <input type="text"
+                                                   onChange={this.handleChange}
+                                                   name="newRating"/>
+                                            <button onClick={() => this.handleSave(book.id)}>Save</button>
+                                        </div>
+                                }
                                 return (
                                     <li key={book.id}
                                         className="booklist_item">
                                         <h2>{book.author}</h2>
                                         <h3>{book.title}</h3>
-                                        <p>Rating: {book.rating}</p>
-                                        <button>Edit</button>
+                                       {rating}
+                                        <button onClick={() => this.handleEdit(book.id)}>Edit</button>
                                         <button onClick={() => this.handleDelete(book.id)}>Delete</button>
+                                        {/* dlaczego () => this.handleDelete(book.id) a nie this.handleDelete(book.id)*/}
                                     </li>
                                 )
                             })}
@@ -97,9 +129,10 @@ class App extends Component {
             </div>
         );
     }
+
     componentDidMount() {
         const booksRef = firebase.database().ref("books");
-        booksRef.on("value", (snapshot)=>{
+        booksRef.on("value", (snapshot) => {
             const books = snapshot.val();
             let newBookList = [];
             for (let book in books) {
