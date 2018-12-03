@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import firebase from '../firebase.js';
-import "../scss/main.scss"
+import React, {Component} from "react";
+import firebase from "../firebase.js";
+import "../scss/main.scss";
 
 class App extends Component {
     constructor(props) {
@@ -11,14 +11,15 @@ class App extends Component {
             rating: "",
             newRating: "",
             books: [],
-            editing: false
+            editing: false,
+            failure: []
         };
     };
 
     handleChange = (event) => {
         this.setState({
             [event.target.name]: event.target.value,
-        })
+        });
     };
 
     handleSubmit = (event) => {
@@ -36,6 +37,32 @@ class App extends Component {
             title: "",
             rating: ""
         });
+
+        //walidacja
+        let success = false;
+        let failure = [];
+
+        if (!this.state.author) {
+            success = false;
+            failure.push("You forgot to enter the book's author");
+        }
+        if (!this.state.title) {
+            success = false;
+            failure.push("You forgot to enter the book's title");
+        }
+        if (isNaN(Number(this.state.rating))) {
+            success = false;
+            failure.push("It looks as if you've entered incorrect rating");
+        }
+        if (!this.state.rating) {
+            success = false;
+            failure.push("You forgot to enter the book's rating");
+        }
+        if (!success) {
+            this.setState({
+                failure: failure
+            });
+        }
     };
 
     handleDelete = (bookId) => {
@@ -44,7 +71,6 @@ class App extends Component {
     };
 
     //uruchomić tylko dla przyciśniętego elementu
-
     handleEdit = () => {
         this.setState({
             editing: true,
@@ -60,11 +86,14 @@ class App extends Component {
         this.setState({
             editing: false,
             newRating: ""
-        })
+        });
     };
 
     render() {
 
+        let errors = this.state.failure.map((error, index) => {
+            return <li key={index}>{error}</li>;
+        });
         return (
             <div>
                 <header className="header">
@@ -81,28 +110,38 @@ class App extends Component {
                                    placeholder="Author"
                                    className="add-book_input add-book_input--author"
                                    onChange={this.handleChange}
+                                   value={this.state.author}
                             />
                             <input type="text"
                                    name="title"
                                    placeholder="Title"
                                    className="add-book_input add-book_input--title"
-                                   onChange={this.handleChange}/>
+                                   onChange={this.handleChange}
+                                   value={this.state.title}
+                            />
                             <input type="text"
                                    name="rating"
                                    placeholder="Rating"
                                    className="add-book_input add-book_input--rating"
-                                   onChange={this.handleChange}/>
+                                   onChange={this.handleChange}
+                                   value={this.state.rating}
+                            />
                             <button className="add-book_button">
                                 Add Book
                             </button>
                         </form>
+                    </section>
+                    <section className="book-panel_display-errors">
+                        <ul>
+                            {errors}
+                        </ul>
                     </section>
                     <section className="book-panel_display-book">
                         <ul className="display-book_booklist">
                             {this.state.books.map((book) => {
                                 let rating;
                                 if (!this.state.editing) {
-                                    rating =  <p>Rating: {book.rating}</p>
+                                    rating = <p>Rating: {book.rating}</p>;
                                 } else {
                                     rating =
                                         <div>
@@ -110,19 +149,19 @@ class App extends Component {
                                                    onChange={this.handleChange}
                                                    name="newRating"/>
                                             <button onClick={() => this.handleSave(book.id)}>Save</button>
-                                        </div>
+                                        </div>;
                                 }
                                 return (
                                     <li key={book.id}
                                         className="booklist_item">
                                         <h2>{book.author}</h2>
                                         <h3>{book.title}</h3>
-                                       {rating}
+                                        {rating}
                                         <button onClick={() => this.handleEdit(book.id)}>Edit</button>
                                         <button onClick={() => this.handleDelete(book.id)}>Delete</button>
                                         {/* dlaczego () => this.handleDelete(book.id) a nie this.handleDelete(book.id)*/}
                                     </li>
-                                )
+                                );
                             })}
                         </ul>
                     </section>
@@ -146,7 +185,7 @@ class App extends Component {
                     author: books[book].author,
                     title: books[book].title,
                     rating: books[book].rating
-                })
+                });
             }
             this.setState({
                 books: newBookList
