@@ -1,5 +1,8 @@
 import React, {Component} from "react";
 import firebase from "../firebase.js";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faBook} from "@fortawesome/free-solid-svg-icons";
+
 import "../scss/main.scss";
 
 class App extends Component {
@@ -97,8 +100,13 @@ class App extends Component {
         return (
             <div>
                 <header className="header">
-                    <div className="header main-width">
-                        <h1 className="header_title">Book Manager</h1>
+                    <div className="main-width header_container">
+                        <h1 className="header_title">
+                            Book Manager
+                        </h1>
+                        <FontAwesomeIcon icon={faBook} spin className="header_icon"/>
+                        <FontAwesomeIcon icon={faBook} spin className="header_icon header_icon--blue"/>
+                        <FontAwesomeIcon icon={faBook} spin className="header_icon header_icon--red"/>
                     </div>
                 </header>
                 <div className="book-panel main-width">
@@ -141,7 +149,7 @@ class App extends Component {
                             {this.state.books.map((book) => {
                                 let rating;
                                 if (!this.state.editing) {
-                                    rating = <p>Rating: {book.rating}</p>;
+                                    rating = <h2>Rating: {book.rating}</h2>;
                                 } else {
                                     rating =
                                         <div>
@@ -153,12 +161,26 @@ class App extends Component {
                                 }
                                 return (
                                     <li key={book.id}
-                                        className="booklist_item">
-                                        <h2>{book.author}</h2>
-                                        <h3>{book.title}</h3>
+                                        className="booklist_book">
+                                        <h2 className="book_author">
+                                            {book.author}
+                                        </h2>
+                                        <h2 className="book_title">
+                                            {book.title}
+                                        </h2>
                                         {rating}
-                                        <button onClick={() => this.handleEdit(book.id)}>Edit</button>
-                                        <button onClick={() => this.handleDelete(book.id)}>Delete</button>
+                                        <button
+                                            onClick={() => this.handleEdit(book.id)}
+                                            className="book_button button--edit"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => this.handleDelete(book.id)}
+                                            className="book_button button--delete"
+                                        >
+                                            Delete
+                                        </button>
                                         {/* dlaczego () => this.handleDelete(book.id) a nie this.handleDelete(book.id)*/}
                                     </li>
                                 );
