@@ -34,7 +34,6 @@ class App extends Component {
             rating: this.state.rating
         };
         booksRef.push(book);
-        // dlaczego czyszczenie nie działa w outpucie? State sprawdzony, działa
         this.setState({
             author: "",
             title: "",
@@ -93,10 +92,15 @@ class App extends Component {
     };
 
     render() {
+        let errors;
+        if (this.state.failure) {
+            errors = this.state.failure.map((error, index) => {
+                return <li key={index} className="errors_item">{error}</li>;
+            });
+        } else {
+            errors = null;
+        }
 
-        let errors = this.state.failure.map((error, index) => {
-            return <li key={index}>{error}</li>;
-        });
         return (
             <div>
                 <header className="header">
@@ -113,34 +117,41 @@ class App extends Component {
                     <section className="book-panel_form">
                         <form className="add-book"
                               onSubmit={this.handleSubmit}>
-                            <input type="text"
-                                   name="author"
-                                   placeholder="Author"
-                                   className="add-book_input add-book_input--author"
-                                   onChange={this.handleChange}
-                                   value={this.state.author}
-                            />
-                            <input type="text"
-                                   name="title"
-                                   placeholder="Title"
-                                   className="add-book_input add-book_input--title"
-                                   onChange={this.handleChange}
-                                   value={this.state.title}
-                            />
-                            <input type="text"
-                                   name="rating"
-                                   placeholder="Rating"
-                                   className="add-book_input add-book_input--rating"
-                                   onChange={this.handleChange}
-                                   value={this.state.rating}
-                            />
+                            <label className="add-book_input_label">Author
+                                <input type="text"
+                                       id="author"
+                                       name="author"
+                                       placeholder="Author"
+                                       className="add-book_input add-book_input--author"
+                                       onChange={this.handleChange}
+                                       value={this.state.author}
+                                />
+                            </label>
+                            <label className="add-book_input_label"> Title
+                                <input type="text"
+                                       name="title"
+                                       placeholder="Title"
+                                       className="add-book_input add-book_input--title"
+                                       onChange={this.handleChange}
+                                       value={this.state.title}
+                                />
+                            </label>
+                            <label className="add-book_input_label">Rating
+                                <input type="text"
+                                       name="rating"
+                                       placeholder="Rating"
+                                       className="add-book_input add-book_input--rating"
+                                       onChange={this.handleChange}
+                                       value={this.state.rating}
+                                />
+                            </label>
                             <button className="add-book_button">
                                 Add Book
                             </button>
                         </form>
                     </section>
                     <section className="book-panel_display-errors">
-                        <ul>
+                        <ul className="errors_list">
                             {errors}
                         </ul>
                     </section>
